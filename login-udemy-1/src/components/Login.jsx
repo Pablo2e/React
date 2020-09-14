@@ -31,12 +31,32 @@ const Login = () => {
 
         if(esRegistro){
             registrar()
+        } else {
+            login()
         }
     }
 
+    const login = React.useCallback(async ()=> {
+        try {
+            const res = await auth.signInWithEmailAndPassword(email, password)
+            console.log(res.user)
+        } catch (error) {
+            console.log(error)
+            if(error.code==='auth/invalid-email'){
+                setError('Email no valido')
+            }
+            if(error.code==='auth/user-not-found'){
+                setError('Email no registrado')
+            }
+            if(error.code==='auth/wrong-password'){
+                setError('Contraseña incorrecta')
+            }
+        }
+    }, [email, password])
+
     const registrar = React.useCallback(async() => {
         try {
-            const res =await auth.createUserWithEmailAndPassword(email, password)
+            const res = await auth.createUserWithEmailAndPassword(email, password)
             await db.collection('usuarios').doc(res.user.email).set({
                 email: res.user.email,
                 uid:res.user.uid
@@ -50,8 +70,8 @@ const Login = () => {
             if(error.code==='auth/invalid-email'){
                 setError('Email no valido')
             }
-            if(error.code==='auth/email-already-in-use'){
-                setError('Email ya utilizado')
+            if(error.code==='auth/user-not-found'){
+                setError('Email no registrado')
             }
         }
     }, [email, password])
