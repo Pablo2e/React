@@ -1,4 +1,5 @@
 import React from 'react'
+import {auth, db} from '../firebase'
 
 const Login = () => {
 
@@ -27,7 +28,33 @@ const Login = () => {
         }
         setError(null)
         console.log('Pasando todas las validaciones')
+
+        if(esRegistro){
+            registrar()
+        }
     }
+
+    const registrar = React.useCallback(async() => {
+        try {
+            const res =await auth.createUserWithEmailAndPassword(email, password)
+            await db.collection('usuarios').doc(res.user.email).set({
+                email: res.user.email,
+                uid:res.user.uid
+            })
+            setEmail('')
+            setPaswsword('')
+            setError(null)
+            
+        } catch (error) {
+            console.log(error)
+            if(error.code==='auth/invalid-email'){
+                setError('Email no valido')
+            }
+            if(error.code==='auth/email-already-in-use'){
+                setError('Email ya utilizado')
+            }
+        }
+    }, [email, password])
 
     return (
         <div className="mt-5">
@@ -62,16 +89,14 @@ const Login = () => {
                         value={password}
                     />
                     <button className="btn btn-dark btn-lg btn-block"
-                            type="submit"
-                    >
+                            type="submit">
                         {
                             esRegistro ? 'Registrarse' : 'Acceder'
                         }
                     </button>
                     <button className="btn btn-info btn-sm btn-block"
                             onClick={() => setEsRegistro(!esRegistro)}
-                            type="button"
-                    >
+                            type="button">
                         {
                             esRegistro ? '¿Ya estas registrado?' : '¿No tienes cuenta?'
                         }
