@@ -1,12 +1,13 @@
 import React from 'react'
 import {auth, db} from '../firebase'
+import {withRouter} from 'react-router-dom'
 
-const Login = () => {
+const Login = (props) => {
 
     const [email, setEmail] = React.useState('')
     const [password, setPaswsword] = React.useState('')
     const [error, setError] = React.useState(null)
-    const [esRegistro, setEsRegistro] = React.useState(true)
+    const [esRegistro, setEsRegistro] = React.useState(false)
 
 
     const procesarDatos = e => {
@@ -40,6 +41,10 @@ const Login = () => {
         try {
             const res = await auth.signInWithEmailAndPassword(email, password)
             console.log(res.user)
+            setEmail('')
+            setPaswsword('')
+            setError(null)
+            props.history.push('/admin')
         } catch (error) {
             console.log(error)
             if(error.code==='auth/invalid-email'){
@@ -52,7 +57,7 @@ const Login = () => {
                 setError('Contraseña incorrecta')
             }
         }
-    }, [email, password])
+    }, [email, password, props.history])
 
     const registrar = React.useCallback(async() => {
         try {
@@ -63,8 +68,8 @@ const Login = () => {
             })
             setEmail('')
             setPaswsword('')
-            setError(null)
-            
+            setError(null)    
+            props.history.push('/admin')        
         } catch (error) {
             console.log(error)
             if(error.code==='auth/invalid-email'){
@@ -74,7 +79,7 @@ const Login = () => {
                 setError('Email no registrado')
             }
         }
-    }, [email, password])
+    }, [email, password, props.history])
 
     return (
         <div className="mt-5">
@@ -128,4 +133,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default withRouter(Login)
