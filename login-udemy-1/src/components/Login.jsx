@@ -66,6 +66,10 @@ const Login = (props) => {
                 email: res.user.email,
                 uid:res.user.uid
             })
+            await db.collection(res.user.uid).add({
+                name:'Tarea de ejemplo',
+                fecha: Date.now()
+            })
             setEmail('')
             setPaswsword('')
             setError(null)    
@@ -100,18 +104,18 @@ const Login = (props) => {
                             )   
                        }
                        <input 
-                        type="email"
-                        className="form-control mb-2"
-                        placeholder="Ingrese un Email"
-                        onChange={e => setEmail(e.target.value)}
-                        value={email}
+                            type="email"
+                            className="form-control mb-2"
+                            placeholder="Ingrese un Email"
+                            onChange={e => setEmail(e.target.value)}
+                            value={email}
                         />
                        <input 
-                        type="password"
-                        className="form-control mb-2"
-                        placeholder="Ingrese un password"
-                        onChange={e => setPaswsword(e.target.value)}
-                        value={password}
+                            type="password"
+                            className="form-control mb-2"
+                            placeholder="Ingrese un password"
+                            onChange={e => setPaswsword(e.target.value)}
+                            value={password}
                     />
                     <button className="btn btn-dark btn-lg btn-block"
                             type="submit">

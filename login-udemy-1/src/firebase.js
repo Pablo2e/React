@@ -3,13 +3,13 @@ import 'firebase/firestore'
 import 'firebase/auth'
 
 const  firebaseConfig = {
-    apiKey: "AIzaSyBAZEuS3V6jWkI_NktFa_KKW7AAsmDhnJs",
-    authDomain: "login-udemy-3dec9.firebaseapp.com",
-    databaseURL: "https://login-udemy-3dec9.firebaseio.com",
-    projectId: "login-udemy-3dec9",
-    storageBucket: "login-udemy-3dec9.appspot.com",
-    messagingSenderId: "41672739484",
-    appId: "1:41672739484:web:b03ad373f638a91b9ebb59"
+    apiKey: "AIzaSyDbMz33pzpKhfJkiGGIJtJb18gmUMJD22M",
+    authDomain: "crud-udemy-react-898b3.firebaseapp.com",
+    databaseURL: "https://crud-udemy-react-898b3.firebaseio.com",
+    projectId: "crud-udemy-react-898b3",
+    storageBucket: "crud-udemy-react-898b3.appspot.com",
+    messagingSenderId: "569028536679",
+    appId: "1:569028536679:web:6369d268847ccc53fea7c2"
   };
   // Initialize Firebase
   app.initializeApp(firebaseConfig);
