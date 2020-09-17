@@ -130,6 +130,17 @@ const Login = (props) => {
                             esRegistro ? '¿Ya estas registrado?' : '¿No tienes cuenta?'
                         }
                     </button>
+                    {
+                        !esRegistro ?(
+                            <button 
+                                className="btn btn-lg btn-danger btn-sm btn-block mt-2"
+                                type="button"
+                                onClick={() => props.history.push('/reset')}
+                            >
+                                Recuperar contraseña
+                            </button>
+                        ) : null
+                    }
                    </form>
                </div>
            </div>

@@ -1,5 +1,7 @@
 import React from 'react'
 import {db} from '../firebase'
+import moment from 'moment'
+import 'moment/locale/es'
 
 const Firestore = (props) => {
 
@@ -28,7 +30,7 @@ const Firestore = (props) => {
   
       obtenerDatos()
   
-    }, [])
+    }, [props.user.uid])
   
     const agregar = async (e) => {
       e.preventDefault()
@@ -111,7 +113,7 @@ const Firestore = (props) => {
                         {
                         tareas.map(item => (
                             <li className="list-group-item" key={item.id}>
-                            {item.name}
+                            {item.name} - {moment(item.fecha).format('LLL')}
                             <button 
                                 className="btn btn-danger btn-sm float-right"
                                 onClick={() => eliminar(item.id)}
