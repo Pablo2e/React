@@ -9,6 +9,8 @@ const Firestore = (props) => {
     const [tarea, setTarea] = React.useState('')
     const [modoEdicion, setModoEdicion] = React.useState(false)
     const [id, setId] = React.useState('')
+    const [ultimo, setUltimo] = React.useState(null)
+    const [desactivar, setDesactivar] = React.useState(false)
   
   
     React.useEffect(() => {
@@ -16,11 +18,30 @@ const Firestore = (props) => {
       const obtenerDatos = async () => {
   
         try {
+          setDesactivar(true)
   
-          const data = await db.collection(props.user.uid).get()
+          /* const data = await db.collection(props.user.uid).get() */
+          /* Para limitar, ordenar se usarían los .*/
+          const data = await db.collection(props.user.uid)
+            .limit(2)
+            .orderBy('fecha')
+            .get()
           const arrayData = data.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          setUltimo(data.docs[data.docs.length-1])
           console.log(arrayData)
           setTareas(arrayData)
+
+          const query= await db.collection(props.user.uid)
+            .limit(2)
+            .orderBy('fecha')
+            .startAfter(data.docs[data.docs.length-1])
+            .get()
+          if(query.empty){
+            console.log('no hay mas documentos')
+            setDesactivar(true)
+          } else {
+            setDesactivar(false)
+          }
           
         } catch (error) {
           console.log(error)
@@ -31,45 +52,67 @@ const Firestore = (props) => {
       obtenerDatos()
   
     }, [props.user.uid])
+
+    const siguiente = async() =>{
+      console.log('siguiente')
+      try {
+        const data = await db.collection(props.user.uid)
+          .limit(2)
+          .orderBy('fecha')
+          .startAfter(ultimo)/* hace que comience despues del documento que nosotros 
+          pasamos por parametro */
+          .get()
+          const arrayData = data.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          setTareas([
+            ...tareas,
+            ...arrayData/* se ponen los ... para acceder a los elementos, sinó se accedería
+            al array */
+          ])
+          setUltimo(data.docs[data.docs.length-1])
+          const query= await db.collection(props.user.uid)
+            .limit(2)
+            .orderBy('fecha')
+            .startAfter(data.docs[data.docs.length-1])
+            .get()
+          if(query.empty){
+            console.log('no hay mas documentos')
+            setDesactivar(true)
+          } else {
+            setDesactivar(false)
+          }
+      } catch (error) {
+        console.log(error)
+      }
+    }
   
     const agregar = async (e) => {
       e.preventDefault()
-  
       if(!tarea.trim()){
         console.log('está vacio')
         return
       }
-  
       try {
-  
         const nuevaTarea = {
           name: tarea,
           fecha: Date.now()
         }
         const data = await db.collection(props.user.uid).add(nuevaTarea)
-  
         setTareas([
           ...tareas,
           {...nuevaTarea, id: data.id}
         ])
-  
         setTarea('')
-        
       } catch (error) {
         console.log(error)
       }
-  
       console.log(tarea)
     }
   
     const eliminar = async (id) => {
       try {
-        
         await db.collection(props.user.uid).doc(id).delete()
-  
         const arrayFiltrado = tareas.filter(item => item.id !== id)
         setTareas(arrayFiltrado)
-  
       } catch (error) {
         console.log(error)
       }
@@ -128,8 +171,15 @@ const Firestore = (props) => {
                             </button>
                             </li>
                         ))
-                        }
+                      }
                     </ul>
+                    <button 
+                      className="btn btn-info btn-block mt-2 btn-sm"
+                      onClick={() => siguiente()}
+                      disabled={desactivar}
+                    >
+                      Siguiente
+                    </button>
                 </div>
                 <div className="col-md-6">
                     <h3>
