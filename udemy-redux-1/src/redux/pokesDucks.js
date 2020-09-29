@@ -19,7 +19,7 @@ export default function pokeReducer(state = dataInicial, action){
                 return {...state, ...action.payload}
             case SIGUIENTE_POQUEMONES_EXITO:
                 return {...state, ...action.payload}
-                case POKE_INFO_EXITO:
+            case POKE_INFO_EXITO:
                 return {...state, unPokemon: action.payload}
             default:
                 return state
@@ -71,7 +71,7 @@ export const obtenerPokemonesAccion = () => async (dispatch) => {
     }
 
     try {
-        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=20`)
+        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=10`)
         dispatch({
             type: OBTENER_POQUEMONES_EXITO,
             payload: res.data
@@ -82,7 +82,7 @@ export const obtenerPokemonesAccion = () => async (dispatch) => {
     }
 }
 
-export const siguientePokemonAccion = (numero) => async (dispatch, getState) => {
+export const siguientePokemonAccion = () => async (dispatch, getState) => {
     
     const next = getState().pokemones.next
 
