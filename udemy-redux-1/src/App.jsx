@@ -3,6 +3,7 @@ import React from 'react';
 import Pokemones from './components/Pokemones';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
+import Perfil from './components/Perfil';
 
 import {
   BrowserRouter as Router,
@@ -35,7 +36,7 @@ function App() {
 
 
   // LocalStorage
-  const RutaProtegida = ({component, path, ...rest}) => {
+  const RutaPrivada = ({component, path, ...rest}) => {
     if(localStorage.getItem('usuario')){
       const usuarioStorage = JSON.parse(localStorage.getItem('usuario'))
       if(usuarioStorage.uid === firebaseUser.uid){
@@ -55,8 +56,8 @@ function App() {
       <div className="container mt-3">
         <Navbar />
         <Switch>
-          <RutaProtegida component={Pokemones} path="/" exact/>
-          {/* <Route component={Pokemones} path="/" exact/> */}
+          <RutaPrivada component={Pokemones} path="/" exact/>
+          <RutaPrivada component={Perfil} path="/perfil" exact/>
           <Route component={Login} path="/login" exact/>
         </Switch>
       </div>
