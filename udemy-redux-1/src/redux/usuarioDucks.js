@@ -1,4 +1,4 @@
-import {auth, firebase, db} from '../firebase'
+import {auth, firebase, db, storage} from '../firebase'
 
 //data inicial
 const dataInicial = {
@@ -87,4 +87,66 @@ export const cerrarSesionAccion = () => (dispatch) => {
     dispatch({
         type: CERRAR_SESION
     })
+}
+
+export const actualizarUsuarioAccion = (nombreActualizado) => async (dispatch, getState) => {
+    dispatch({
+        type: LOADING
+    })
+
+    const {user} = getState().usuario
+
+    try {
+        
+        await db.collection('usuarios').doc(user.email).update({
+            displayName: nombreActualizado
+        })
+
+        const usuario = {
+            ...user,
+            displayName: nombreActualizado
+        }
+
+        dispatch({
+            type: USUARIO_EXITO,
+            payload: usuario
+        })
+        localStorage.setItem('usuario', JSON.stringify(usuario))
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const editarFotoAccion = (imageEditada) => async (dispatch, getState) => {
+    dispatch({
+        type: LOADING
+    })
+
+    const {user} = getState().usuario
+
+    try {
+        //el 1º child crea una carpeta, el segundo el documento
+        const imageRef = await storage.ref().child(user.email).child('foto perfil')
+        await imageRef.put(imageEditada) // esto pone la nueva imagen
+        const imagenURL = await imageRef.getDownloadURL() // esto la llama nuevamente
+        await db.collection('usuarios').doc(user.email).update({
+            photoURL: imagenURL
+        })
+
+        const usuario = {
+            ...user,
+            photoURL: imagenURL
+        }
+
+        dispatch({
+            type: USUARIO_EXITO,
+            payload: usuario
+        })
+        localStorage.setItem('usuario', JSON.stringify(usuario))
+
+    } catch (error) {
+        console.log(error)
+    }
+
 }

@@ -1,16 +1,43 @@
 import React from 'react'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch, createDispatchHook} from 'react-redux'
+import {actualizarUsuarioAccion, editarFotoAccion} from '../redux/usuarioDucks'
 
 const Perfil = () => {
 
     const usuario = useSelector(store => store.usuario.user)
+    const loading = useSelector(store => store.usuario.loading)
     console.log (usuario)
 
     const [nombreUsuario, setNombreUsuario] = React.useState(usuario.displayName)
     const [activarFormulario, setActivarFormulario] = React.useState(false)
+    const [error, setError] = React.useState(false)
+
+    const dispatch = useDispatch()
 
     const actualizarUsuario = () => {
-        
+
+        if(!nombreUsuario.trim()){
+            console.log('Nombre vacío')
+            return
+        }
+        dispatch(actualizarUsuarioAccion(nombreUsuario))
+        setActivarFormulario(false)
+    }
+
+    const seleccionarArchivo = imagen =>{
+        console.log(imagen.target.files[0])
+        const imagenCliente = imagen.target.files[0]
+
+        if(imagenCliente === undefined) {
+            console.log('no se seleccionó imagen')
+        } 
+
+        if(imagenCliente.type === "image/jpeg" || imagenCliente.type === "image/png"){
+            dispatch(editarFotoAccion(imagenCliente))
+            setError(false)
+        } else {
+            setError(true)
+        }
     }
 
     return (
@@ -23,7 +50,39 @@ const Perfil = () => {
                     <button className="btn btn-dark" onClick={() => setActivarFormulario(true) }>
                         Editar Nombre
                     </button>
+                    {
+                        error &&
+                        <div className="alert alert-warning mt-3">
+                            Solo archivos .jpg o .png
+                        </div>
+                    }
+                    <div className="custom-file">
+                        <input 
+                            type="file" 
+                            className="custom-file-input" 
+                            id="inputGroupFile01"
+                            style={{display: 'none'}}
+                            onChange={e=> seleccionarArchivo(e)}
+                            disabled={loading}
+                        />
+                        <label 
+                            className={loading ? 'btn btn-dark mt-2 disabled' : 'btn btn-dark mt-2'} 
+                            htmlFor="inputGroupFile01"
+                            >
+                                Actualizar Imagen
+                        </label>
+                    </div>
                 </div>
+                {
+                    loading &&
+                    <div className="card-body">
+                        <div className="d-flex justify-content-center my-3">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                }
                 {
                     activarFormulario &&
                     <div className="card-body">
