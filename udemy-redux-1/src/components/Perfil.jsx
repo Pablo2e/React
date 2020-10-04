@@ -1,5 +1,5 @@
 import React from 'react'
-import {useSelector, useDispatch, createDispatchHook} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {actualizarUsuarioAccion, editarFotoAccion} from '../redux/usuarioDucks'
 
 const Perfil = () => {
