@@ -1,6 +1,7 @@
 import React from 'react'
 import {UsuarioContext} from '../context/UsuarioProvider'
 
+
 const Navbar = () => {
 
     const {usuario, iniciarSesion, cerrarSesion} = React.useContext(UsuarioContext)
@@ -9,15 +10,23 @@ const Navbar = () => {
         <div className='navbar navbar-dark bg-dark'>
             <div className="container">
                 <div>
-                    <div className="button btn btn-dark" onClick={iniciarSesion}>
+                    {
+                        usuario.email ?(
+                            <div className="button btn btn-dark" onClick={cerrarSesion}>
+                                Cerrar Sesión
+                            </div>
+                        ) : (
+                            <div className="button btn btn-dark" onClick={iniciarSesion}>
                         Login
                     </div>
-                    <div className="button btn btn-dark" onClick={cerrarSesion}>
-                        Cerrar Sesión
-                    </div>
+                        )
+                    }
                 </div>
                 <div>
-                    <span className="text-light">Invitado</span>
+                    <span className="text-light">
+                        {
+                            usuario.email ? usuario.email : 'Invitado'
+                        }</span>
                 </div>
             </div>
             
