@@ -13,21 +13,21 @@ const UsuarioProvider = (props) => {
     }, [])
 
     const detectarUsuario = () => {
-        auth.onAuthStateChanged(user => {
-            if(user){
-                user.getIdTokenResult().then(idTokenResult => {
+        auth.onAuthStateChanged(userChange => {
+            if(userChange){
+                userChange.getIdTokenResult().then(idTokenResult => {
                     console.log(idTokenResult.claims)
                     // console.log(idTokenResult.claims.accounts.admin)
                     if (!!idTokenResult.claims.admin) {
                         console.log('es admin')
                         console.log(idTokenResult.claims.admin)
-                        setUsuario({email: user.email, uid: user.uid, activo: true, rol: 'admin'})
+                        setUsuario({email: userChange.email, uid: userChange.uid, activo: true, rol: 'admin'})
                     } else if(!!idTokenResult.claims.autor){
                         console.log('es autor')
-                        setUsuario({email: user.email, uid: user.uid, activo: true, rol: 'autor'})
+                        setUsuario({email: userChange.email, uid: userChange.uid, activo: true, rol: 'autor'})
                     }else {
                         console.log('es invitado')
-                        setUsuario({email: user.email, uid: user.uid, activo: true, rol: 'invitado'})
+                        setUsuario({email: userChange.email, uid: userChange.uid, activo: true, rol: 'invitado'})
                     }
                 })
             }else{

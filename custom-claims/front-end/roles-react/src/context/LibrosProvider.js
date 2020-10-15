@@ -7,7 +7,7 @@ const LibrosProvider = (props) => {
 
     const [libros, setLibros] = React.useState([])
 
-    React.useEffect(() =>{
+    React.useEffect(() => {
         fetchLibros()
     }, [])
 
@@ -25,8 +25,9 @@ const LibrosProvider = (props) => {
             console.log(error)
         }
     }
+
     return (
-        <LibrosContext.Provider value={libros, fetchLibros}>
+        <LibrosContext.Provider value={{libros, fetchLibros}}>
             {props.children}
         </LibrosContext.Provider>
     )

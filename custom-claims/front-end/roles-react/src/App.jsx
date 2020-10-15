@@ -1,9 +1,10 @@
 import React from 'react'
+import ListaLibros from './components/ListaLibros'
 import Navbar from './components/Navbar'
-import VistaAdmin from './components/VistaAdmin'
-import AgregarLibros from './components/AgregarLibros'
+
 import {UsuarioContext} from './context/UsuarioProvider'
-import Libros from './components/Libros'
+import AdminRoles from './components/AdminRoles'
+import AgregarLibro from './components/AgregarLibro'
 
 const App = () => {
 
@@ -12,14 +13,17 @@ const App = () => {
     return (
         <div>
             <Navbar />
-            <div className="container">
+            
+            <div className="container mt-3">
                 {
-                        usuario.rol !== 'admin' && <VistaAdmin />
+                    usuario.rol === 'admin' && <AdminRoles usuario={usuario} />
                 }
+
                 {
-                        usuario.rol !== 'autor' && <AgregarLibros />
+                    (usuario.rol === 'autor' || usuario.rol === 'admin') && <AgregarLibro />
                 }
-                <Libros />
+
+                <ListaLibros />
             </div>
         </div>
     )
